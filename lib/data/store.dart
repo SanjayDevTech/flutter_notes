@@ -1,49 +1,72 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:simple_state/simple_state.dart';
+
 import 'models.dart';
 
 abstract class NotesStore {
-  Future<List<Note>> getNotes();
-  Stream<List<Note>> watchNotes();
+  Observable<List<Note>> get notes;
+  List<Note> getNotes();
   Future<Note?> getNoteById(String id);
   Future<void> addNote(Note note);
   Future<void> updateNote(Note note);
   Future<void> deleteNoteById(String id);
 }
 
+Future<void> initHiveBox() async {
+  Hive.registerAdapter(NoteAdapter());
+  await Hive.openBox<Note>("notes");
+}
+
 class NotesStoreImpl implements NotesStore {
+
+  final Box<Note> _notesBox;
+
+  NotesStoreImpl(this._notesBox);
+
+  // final _notesStreamController = StreamController<List<Note>>.broadcast();
+
+  bool _isNotesStreamInitialized = false;
+
+  final _notesObserver = Observable(<Note>[]);
+
+  @override
+  Observable<List<Note>> get notes {
+    if (!_isNotesStreamInitialized) {
+      _isNotesStreamInitialized = true;
+      _notesObserver.value = getNotes();
+      _notesBox.watch().listen((event) {
+        _notesObserver.value = getNotes();
+      });
+    }
+    return _notesObserver;
+  }
+
   @override
   Future<void> addNote(Note note) async {
-    // TODO: implement addNote
-    throw UnimplementedError();
+    await _notesBox.put(note.id, note);
   }
 
   @override
   Future<void> deleteNoteById(String id) async {
-    // TODO: implement deleteNoteById
-    throw UnimplementedError();
+    await _notesBox.delete(id);
   }
 
   @override
   Future<Note?> getNoteById(String id) async {
-    // TODO: implement getNoteById
-    throw UnimplementedError();
+    return _notesBox.get(id);
   }
 
   @override
-  Future<List<Note>> getNotes() async {
-    // TODO: implement getNotes
-    throw UnimplementedError();
+  List<Note> getNotes() {
+    return _notesBox.values.toList();
   }
 
   @override
   Future<void> updateNote(Note note) async {
-    // TODO: implement updateNote
-    throw UnimplementedError();
-  }
-
-  @override
-  Stream<List<Note>> watchNotes() {
-    // TODO: implement watchNotes
-    throw UnimplementedError();
+    await _notesBox.put(note.id, note);
   }
 
 }

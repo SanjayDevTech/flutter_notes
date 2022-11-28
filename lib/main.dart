@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_notes/data/store.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'screens/home/main.dart';
 import 'screens/view/main.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await initHiveBox();
   runApp(const FlutterNotesApp());
 }
 
