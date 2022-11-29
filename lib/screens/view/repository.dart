@@ -6,7 +6,7 @@ class ViewPageRepository {
 
   ViewPageRepository(this._notesStore);
 
-  Future<Note?> getNoteById(String id) async {
+  Future<Note?> getNoteById(int id) async {
     return _notesStore.getNoteById(id);
   }
 
@@ -14,7 +14,7 @@ class ViewPageRepository {
     await _notesStore.updateNote(note);
   }
 
-  Future<void> deleteNoteById(String id) async {
+  Future<void> deleteNoteById(int id) async {
     await _notesStore.deleteNoteById(id);
   }
 }

@@ -28,7 +28,6 @@ class HomePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           repository.addNote(Note(
-            id: (const Uuid()).v4(),
             title: 'New Note',
             body: 'New Note Body',
           ));

@@ -12,7 +12,7 @@ class HomePageRepository {
     return _notesStore.notes;
   }
 
-  Future<void> deleteNoteById(String id) async {
+  Future<void> deleteNoteById(int id) async {
     await _notesStore.deleteNoteById(id);
   }
 

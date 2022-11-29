@@ -9,10 +9,10 @@ import 'models.dart';
 abstract class NotesStore {
   Observable<List<Note>> get notes;
   List<Note> getNotes();
-  Future<Note?> getNoteById(String id);
+  Future<Note?> getNoteById(int id);
   Future<void> addNote(Note note);
   Future<void> updateNote(Note note);
-  Future<void> deleteNoteById(String id);
+  Future<void> deleteNoteById(int id);
 }
 
 Future<void> initHiveBox() async {
@@ -46,16 +46,16 @@ class NotesStoreImpl implements NotesStore {
 
   @override
   Future<void> addNote(Note note) async {
-    await _notesBox.put(note.id, note);
+    await _notesBox.add(note);
   }
 
   @override
-  Future<void> deleteNoteById(String id) async {
+  Future<void> deleteNoteById(int id) async {
     await _notesBox.delete(id);
   }
 
   @override
-  Future<Note?> getNoteById(String id) async {
+  Future<Note?> getNoteById(int id) async {
     return _notesBox.get(id);
   }
 
@@ -66,7 +66,7 @@ class NotesStoreImpl implements NotesStore {
 
   @override
   Future<void> updateNote(Note note) async {
-    await _notesBox.put(note.id, note);
+    await _notesBox.put(note.key, note);
   }
 
 }

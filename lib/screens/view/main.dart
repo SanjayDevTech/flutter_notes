@@ -11,7 +11,7 @@ import 'repository.dart';
 class ViewPage extends StatelessWidget {
   const ViewPage({super.key, this.noteId});
 
-  final String? noteId;
+  final int? noteId;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class ViewPage extends StatelessWidget {
       ),
       body: ViewPageProvider(
         state: ViewPageState(repository, noteId: noteId),
-        child: const ViewPageBody(),
+        child: ViewPageBody(),
       ),
     );
   }

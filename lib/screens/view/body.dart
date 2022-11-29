@@ -4,7 +4,10 @@ import 'package:flutter_notes/utils.dart';
 import 'provider.dart';
 
 class ViewPageBody extends StatelessWidget {
-  const ViewPageBody({super.key});
+  ViewPageBody({super.key});
+
+  final _titleController = TextEditingController();
+  final _bodyController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,32 +21,79 @@ class ViewPageBody extends StatelessWidget {
       return const Center(child: Text('No note selected'));
     }
 
-    return repository.getNoteById(noteId).when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error) => Center(child: Text(error.toString())),
-          data: (note) {
-            if (note == null) {
-              return const Center(child: Text('Note not found'));
-            }
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    note.title,
-                    style: const TextStyle(
-                        fontSize: 28, fontWeight: FontWeight.bold),
+    final noteFuture = repository.getNoteById(noteId);
+
+    return noteFuture.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error) => Center(child: Text(error.toString())),
+      data: (note) {
+        if (note == null) {
+          return const Center(child: Text('Note not found'));
+        }
+        _titleController.text = note.title;
+        _bodyController.text = note.body;
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16, top: 8),
+                child: TextField(
+                  controller: _titleController,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Notes title',
+                    hintText: 'Enter the notes title',
                   ),
-                  Text(
-                    note.body,
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ],
+                ),
               ),
-            );
-          },
+              Flexible(
+                flex: 0,
+                child: SingleChildScrollView(
+                  child: TextField(
+                    controller: _bodyController,
+                    style: const TextStyle(fontSize: 18),
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Notes content',
+                      hintText: 'Enter the notes content',
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () {
+                  final newTitle = _titleController.text;
+                  final newBody = _bodyController.text;
+
+                  if (newTitle.isEmpty || newBody.isEmpty) {
+                    return;
+                  }
+
+                  if (note.title == newTitle && note.body == newBody) {
+                    Navigator.of(context).pop();
+                    return;
+                  }
+
+                  final updatedNote = note
+                    ..body = newBody
+                    ..title = newTitle;
+                  repository.updateNote(updatedNote);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          ),
         );
+      },
+    );
   }
 }

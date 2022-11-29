@@ -27,6 +27,8 @@ class HomePageBody extends StatelessWidget {
           itemBuilder: (context, index) {
             final note = notes[index];
             return ListTile(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               title: Text(note.title),
               subtitle: Text(
                 note.body,
@@ -35,10 +37,10 @@ class HomePageBody extends StatelessWidget {
               ),
               trailing: IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () => repository.deleteNoteById(note.id),
+                onPressed: () => repository.deleteNoteById(note.key),
               ),
               onTap: () {
-                context.push('/view/${note.id}');
+                context.push('/view/${note.key}');
               },
             );
           },

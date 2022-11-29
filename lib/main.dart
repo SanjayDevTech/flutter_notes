@@ -22,9 +22,12 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/view/:id',
-      builder: (context, state) => ViewPage(
-        noteId: state.params["id"],
-      ),
+      builder: (context, state) {
+        String id = state.params['id']!;
+        return ViewPage(
+          noteId: int.tryParse(id),
+        );
+      },
     )
   ],
 );
