@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:simple_state/simple_state.dart';
 
@@ -25,8 +24,6 @@ class NotesStoreImpl implements NotesStore {
   final Box<Note> _notesBox;
 
   NotesStoreImpl(this._notesBox);
-
-  // final _notesStreamController = StreamController<List<Note>>.broadcast();
 
   bool _isNotesStreamInitialized = false;
 

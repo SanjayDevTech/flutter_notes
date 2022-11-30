@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_notes/data/models.dart';
-import 'package:flutter_notes/data/store.dart';
-import 'package:flutter_notes/screens/view/body.dart';
-import 'package:flutter_notes/screens/view/provider.dart';
-import 'package:flutter_notes/screens/view/state.dart';
 import 'package:hive/hive.dart';
 
+import 'package:flutter_notes/data/models.dart';
+import 'package:flutter_notes/data/store.dart';
+
 import 'repository.dart';
+import 'body.dart';
+import 'provider.dart';
+import 'state.dart';
 
 class ViewPage extends StatelessWidget {
   const ViewPage({super.key, this.noteId});
@@ -20,7 +21,7 @@ class ViewPage extends StatelessWidget {
     final repository = ViewPageRepository(store);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('View Page'),
+        title: Text(noteId == null ? 'Add Page' : 'Edit Page'),
       ),
       body: ViewPageProvider(
         state: ViewPageState(repository, noteId: noteId),

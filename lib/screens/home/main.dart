@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
+
 import 'package:flutter_notes/data/models.dart';
 import 'package:flutter_notes/data/store.dart';
-import 'package:flutter_notes/screens/home/provider.dart';
-import 'package:flutter_notes/screens/home/repository.dart';
-import 'package:flutter_notes/screens/home/state.dart';
-import 'package:hive/hive.dart';
-import 'package:uuid/uuid.dart';
 
 import 'body.dart';
+import 'provider.dart';
+import 'repository.dart';
+import 'state.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -26,11 +27,8 @@ class HomePage extends StatelessWidget {
         child: const HomePageBody(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          repository.addNote(Note(
-            title: 'New Note',
-            body: 'New Note Body',
-          ));
+        onPressed: () {
+          context.push('/view');
         },
         child: const Icon(Icons.add),
       ),

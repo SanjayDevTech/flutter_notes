@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_notes/screens/view/state.dart';
+
+import 'state.dart';
 
 class ViewPageProvider extends InheritedWidget {
   const ViewPageProvider({super.key, required super.child, required this.state});

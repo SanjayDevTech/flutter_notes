@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_notes/data/models.dart';
+
 import 'package:flutter_notes/utils.dart';
 
 import 'provider.dart';
@@ -17,21 +19,14 @@ class ViewPageBody extends StatelessWidget {
 
     final repository = state.repository;
 
-    if (noteId == null) {
-      return const Center(child: Text('No note selected'));
-    }
-
     final noteFuture = repository.getNoteById(noteId);
 
     return noteFuture.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error) => Center(child: Text(error.toString())),
       data: (note) {
-        if (note == null) {
-          return const Center(child: Text('Note not found'));
-        }
-        _titleController.text = note.title;
-        _bodyController.text = note.body;
+        _titleController.text = note?.title ?? "";
+        _bodyController.text = note?.body ?? "";
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -69,26 +64,36 @@ class ViewPageBody extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final newTitle = _titleController.text;
                   final newBody = _bodyController.text;
+
+                  final navigator = Navigator.of(context);
 
                   if (newTitle.isEmpty || newBody.isEmpty) {
                     return;
                   }
 
-                  if (note.title == newTitle && note.body == newBody) {
-                    Navigator.of(context).pop();
-                    return;
-                  }
+                  if (note != null) {
+                    if (note.title == newTitle && note.body == newBody) {
+                      Navigator.of(context).pop();
+                      return;
+                    }
+                    final updatedNote = note
+                      ..body = newBody
+                      ..title = newTitle;
 
-                  final updatedNote = note
-                    ..body = newBody
-                    ..title = newTitle;
-                  repository.updateNote(updatedNote);
-                  Navigator.of(context).pop();
+                    await repository.updateNote(updatedNote);
+                  } else {
+                    final newNote = Note(
+                      title: newTitle,
+                      body: newBody,
+                    );
+                    await repository.addNote(newNote);
+                  }
+                  navigator.pop();
                 },
-                child: const Text('Save'),
+                child: Text(note == null ? 'Add' : 'Save'),
               ),
             ],
           ),

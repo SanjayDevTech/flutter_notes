@@ -40,7 +40,7 @@ class HomePageBody extends StatelessWidget {
                 onPressed: () => repository.deleteNoteById(note.key),
               ),
               onTap: () {
-                context.push('/view/${note.key}');
+                context.push('/view?id=${note.key}');
               },
             );
           },
